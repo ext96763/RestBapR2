@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eu.profinit.opendata.mapper.RecordMapper">
+
+    <select id="searchSupplier" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON e.entity_id = r.authority WHERE 1=1
+        <if test="ico != null">
+            AND e.ico = #{ico}
+        </if>
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(e.name) LIKE LOWER(#{pattern})
+        </if>
+        AND r.authority_role = 'supplier'
+        UNION
+        SELECT * FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
+        <if test="ico != null">
+            AND e.ico = #{ico}
+        </if>
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(e.name) LIKE LOWER(#{pattern})
+        </if>
+        AND r.authority_role = 'customer'
+    </select>
+
+    <select id="searchCustomer" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON e.entity_id = r.authority WHERE 1=1
+        <if test="ico != null">
+            AND e.ico = #{ico}
+        </if>
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(e.name) LIKE LOWER(#{pattern})
+        </if>
+        AND r.authority_role = 'customer'
+        UNION
+        SELECT * FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
+        <if test="ico != null">
+            AND e.ico = #{ico}
+        </if>
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(e.name) LIKE LOWER(#{pattern})
+        </if>
+        AND r.authority_role = 'supplier'
+    </select>
+
+
+    <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
+
+        <id property="recordId" column="record_id"/>
+        <result property="amountCzk" column="amount_czk"/>
+        <result property="authorityIdentifier" column="authority_identifier"/>
+        <result property="currency" column="currency"/>
+        <result property="dateCreated" column="date_created"/>
+        <result property="dateOfExpiry" column="date_of_expiry"/>
+        <result property="dateOfPayment" column="date_of_payment"/>
+        <result property="dueDate" column="due_date"/>
+        <result property="inEffect" column="in_effect"/>
+        <result property="masterId" column="master_id"/>
+        <result property="originalCurrencyAmount" column="original_currency_amount"/>
+        <result property="budgetCategory" column="budget_category"/>
+        <result property="subject" column="subject"/>
+        <result property="variableSymbol" column="variable_symbol"/>
+
+        <result property="partner" column="partner"/>
+        <result property="authority" column="authority"/>
+        <result property="parentRecord" column="parent_id"/>
+        <result property="retrieval" column="retrieval_id"/>
+        <result property="recordType" column="record_type" typeHandler="eu.profinit.opendata.model.typehandler.RecordTypeTypeHandler" javaType="eu.profinit.opendata.model.RecordType"/>
+        <result property="authorityRole" column="authority_role"/>
+        <result property="periodicity" column="periodicity" typeHandler="eu.profinit.opendata.model.typehandler.PeriodicityTypeHandler" javaType="eu.profinit.opendata.model.Periodicity"/>
+        <association property="authority" column="authority" resultMap="entityResultMap" javaType="eu.profinit.opendata.model.Entity"/>
+        <association property="partner" column="partner" resultMap="entityResultMap" javaType="eu.profinit.opendata.model.Entity"/>
+    </resultMap>
+
+    <resultMap id="entityResultMap" type="eu.profinit.opendata.model.Entity">
+        <id property="entityId" column="entity_id"/>
+        <result property="ico" column="ico"/>
+        <result property="dic" column="dic"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+</mapper>
