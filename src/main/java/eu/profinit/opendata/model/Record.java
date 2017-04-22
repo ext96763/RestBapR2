@@ -270,7 +270,6 @@ public class Record {
         this.retrieval = retrieval;
     }
 
-    @JsonBackReference
     public Entity getAuthority() {
         return authority;
     }
@@ -279,7 +278,6 @@ public class Record {
         this.authority = authority;
     }
 
-    @JsonManagedReference
     public Entity getPartner() {
         return partner;
     }

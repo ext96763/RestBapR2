@@ -5,7 +5,7 @@
 <mapper namespace="eu.profinit.opendata.mapper.RecordMapper">
 
     <select id="searchSupplier" resultMap="recordResultMap">
-        SELECT * FROM record r JOIN entity e ON e.entity_id = r.authority WHERE 1=1
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
         <if test="ico != null">
             AND e.ico = #{ico}
         </if>
@@ -48,6 +48,50 @@
         AND r.authority_role = 'supplier'
     </select>
 
+    <select id="searchTender" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+        <if test="dateCreated != null">
+            AND r.date_created BETWEEN #{dateCreated} AND #{dateCreated}
+        </if>
+        <if test="dueDate != null">
+            AND r.due_date BETWEEN #{dueDate} AND #{dueDate}
+        </if>
+        <if test="volume != null">
+            <bind name="pattern" value="'%' + volume + '%'" />
+            AND r.amount_czk = #{volume}
+        </if>
+        <!--UNION-->
+        <!--SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1-->
+        <!--<if test="name != null">-->
+            <!--<bind name="pattern" value="'%' + name + '%'" />-->
+            <!--AND LOWER(r.subject) LIKE LOWER(#{pattern})-->
+        <!--</if>-->
+        <!--<if test="dateCreated != null">-->
+            <!--<bind name="pattern" value="'%' + dateCreated + '%'" />-->
+        <!--AND TIMESTAMP r.date_created BETWEEN #{dateCreated} AND #{dueDate}-->
+        <!--</if>-->
+        <!--<if test="dueDate != null">-->
+            <!--<bind name="pattern" value="'%' + dueDate + '%'" />-->
+            <!--AND TIMESTAMP r.due_date BETWEEN #{dateCreated} AND #{dueDate}-->
+        <!--</if>-->
+        <!--<if test="volume != null">-->
+            <!--<bind name="pattern" value="'%' + volume + '%'" />-->
+            <!--AND r.amount_czk = #{volume}-->
+        <!--</if>-->
+    </select>
+
+    <select id="searchByName" resultMap="recordResultMap">
+        SELECT * FROM record r WHERE 1=1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+    </select>
+
 
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
 
@@ -65,13 +109,10 @@
         <result property="budgetCategory" column="budget_category"/>
         <result property="subject" column="subject"/>
         <result property="variableSymbol" column="variable_symbol"/>
-
-        <result property="partner" column="partner"/>
-        <result property="authority" column="authority"/>
-        <result property="parentRecord" column="parent_id"/>
-        <result property="retrieval" column="retrieval_id"/>
+        <!--<result property="parentRecord" column="parent_id"/>-->
+        <!--<result property="retrieval" column="retrieval_id"/>-->
         <result property="recordType" column="record_type" typeHandler="eu.profinit.opendata.model.typehandler.RecordTypeTypeHandler" javaType="eu.profinit.opendata.model.RecordType"/>
-        <result property="authorityRole" column="authority_role"/>
+        <result property="authorityRole" column="authority_role" typeHandler="eu.profinit.opendata.model.typehandler.AuthorityRoleTypeHandler" javaType="eu.profinit.opendata.model.AuthorityRole"/>
         <result property="periodicity" column="periodicity" typeHandler="eu.profinit.opendata.model.typehandler.PeriodicityTypeHandler" javaType="eu.profinit.opendata.model.Periodicity"/>
         <association property="authority" column="authority" resultMap="entityResultMap" javaType="eu.profinit.opendata.model.Entity"/>
         <association property="partner" column="partner" resultMap="entityResultMap" javaType="eu.profinit.opendata.model.Entity"/>
