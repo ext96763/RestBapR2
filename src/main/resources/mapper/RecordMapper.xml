@@ -54,38 +54,52 @@
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})
         </if>
-        <if test="dateCreated != null">
-            AND r.date_created BETWEEN #{dateCreated} AND #{dateCreated}
-        </if>
-        <if test="dueDate != null">
-            AND r.due_date BETWEEN #{dueDate} AND #{dueDate}
-        </if>
         <if test="volume != null">
-            <bind name="pattern" value="'%' + volume + '%'" />
             AND r.amount_czk = #{volume}
         </if>
-        <!--UNION-->
-        <!--SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1-->
-        <!--<if test="name != null">-->
-            <!--<bind name="pattern" value="'%' + name + '%'" />-->
-            <!--AND LOWER(r.subject) LIKE LOWER(#{pattern})-->
-        <!--</if>-->
-        <!--<if test="dateCreated != null">-->
-            <!--<bind name="pattern" value="'%' + dateCreated + '%'" />-->
-        <!--AND TIMESTAMP r.date_created BETWEEN #{dateCreated} AND #{dueDate}-->
-        <!--</if>-->
-        <!--<if test="dueDate != null">-->
-            <!--<bind name="pattern" value="'%' + dueDate + '%'" />-->
-            <!--AND TIMESTAMP r.due_date BETWEEN #{dateCreated} AND #{dueDate}-->
-        <!--</if>-->
-        <!--<if test="volume != null">-->
-            <!--<bind name="pattern" value="'%' + volume + '%'" />-->
-            <!--AND r.amount_czk = #{volume}-->
-        <!--</if>-->
+
+        <choose>
+            <when test="dateCreated != null and dueDate !=null">
+                AND r.date_created BETWEEN #{dateCreated} AND #{dueDate}
+            </when>
+            <when test="dateCreated != null">
+                AND r.date_created >= #{dateCreated}
+            </when>
+            <when test="dueDate != null">
+                <![CDATA[ AND r.date_created <= #{dueDate} ]]>
+            </when>
+        </choose>
+        UNION
+        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+        <if test="volume != null">
+            AND r.amount_czk = #{volume}
+        </if>
+
+        <choose>
+            <when test="dateCreated != null and dueDate !=null">
+                AND r.date_created BETWEEN #{dateCreated} AND #{dueDate}
+            </when>
+            <when test="dateCreated != null">
+                AND r.date_created >= #{dateCreated}
+            </when>
+            <when test="dueDate != null">
+                <![CDATA[ AND r.date_created <= #{dueDate} ]]>
+            </when>
+        </choose>
     </select>
 
     <select id="searchByName" resultMap="recordResultMap">
-        SELECT * FROM record r WHERE 1=1
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+        UNION
+        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
         <if test="name != null">
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})

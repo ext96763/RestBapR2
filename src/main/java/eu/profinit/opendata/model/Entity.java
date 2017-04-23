@@ -8,6 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.profinit.opendata.model.typehandler.EntityTypeTypeHandler;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Represents an entity taking part in a transaction (a Record). Can be a public institution (ministry), company, an
@@ -51,17 +52,23 @@ public class Entity {
     private EntityType entityType;
 
     /** DataSources that this Entity publishes. Only applicable if this Entity is public. */
-      
-    @JsonProperty
+
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The DataSources that this Entity publishes", required = true)
     private Collection<DataSource> dataSources;
 
     /** Records where this Entity is the publishing authority. */
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Records where this Entity is the publishing authority", required = true)
     private Collection<Record> recordsAsAuthority;
 
     /** Records where this Entity is the partner. */
-    @JsonBackReference
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Records where this Entity is the partner", required = true)
     private Collection<Record> recordsAsPartner;
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The DIC of buyer or supplier", required = true)
     public String getDic() {
         return dic;
     }
@@ -70,6 +77,8 @@ public class Entity {
         this.dic = dic;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The ICO of buyer or supplier", required = true)
     public String getIco() {
         return ico;
     }
@@ -87,6 +96,8 @@ public class Entity {
     }
 
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The name of buyer or supplier", required = true)
     public String getName() {
         return name;
     }
@@ -95,6 +106,8 @@ public class Entity {
         this.name = name;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Unique key for buyer or supplier in Entity model", required = true)
     public Long getEntityId() {
         return entityId;
     }

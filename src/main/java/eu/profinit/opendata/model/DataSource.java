@@ -19,42 +19,42 @@ import java.util.Objects;
 public class DataSource {
     /** The time this data source was last processed. This may or may not have involved retrievals (both successful
      * and unsuccessful) */
-    @JsonBackReference
+     
     private Timestamp lastProcessedDate;
 
     /** The application identifier of this DataSource */
-    @JsonBackReference
+     
     private Long dataSourceId;
 
     /** The type of record one can expect to get from this DataSource. This does not mean data files can't contain any
      * others - this field is used to specify the main type. */
-    @JsonBackReference
+     
     private RecordType recordType;
 
     /** Specifies how often <em>new</em> DataInstances should be generated for this DataSource. Should be APERIODIC
      * unless the DataSource's handler can generate new instances automatically. */
-    @JsonBackReference
+     
     private Periodicity periodicity;
 
     /** The physical data files available for this DataSource */
-    @JsonBackReference
+     
     private Collection<DataInstance> dataInstances;
 
     /** The public Entity that is publishing this DataSource */
-    @JsonBackReference
+     
     private Entity entity;
 
     /** A description of this DataSource */
-    @JsonBackReference
+     
     private String description;
 
     /** Indicates whether this DataSource should be processed when the application runs. */
-    @JsonBackReference
+     
     private boolean active;
 
     /** The DataSourceHandler that should be invoked when processing this DataSource. Must be a Spring component
      * accessible from inside the application's ApplicationContext. */
-    @JsonBackReference
+     
     private Class<? extends DataSourceHandler> handlingClass;
 
     public boolean isActive() {

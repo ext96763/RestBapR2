@@ -3,9 +3,7 @@ package eu.profinit.opendata.controller;
 import eu.profinit.opendata.mapper.RecordMapper;
 import eu.profinit.opendata.model.Record;
 import eu.profinit.opendata.utils.DateParser;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
@@ -34,12 +32,19 @@ public class MainController {
     @Autowired
     RecordMapper mapper;
 
-    @Autowired(required = true)
+    @Autowired
     DateParser dateParser;
 
-    @ApiOperation(value = "Search by name", notes = "Any part of given name will by searched", produces = "application/json")
-    @ApiResponses(value ={@ApiResponse(code = 200, message = "OK"),
-                          @ApiResponse(code = 400, message = "Bad Request")})
+    @ApiOperation(value = "Search by name", notes = "Any part of given name of tender will by searched", produces = "application/json")
+    @ApiResponses(value ={
+            @ApiResponse(code = 200, message = "Success", response = Record.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "Name of tender", required = false, dataType = "string", paramType = "query")
+    })
     @Produces(value = "application/json")
     @CrossOrigin()
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
@@ -49,6 +54,9 @@ public class MainController {
         records.addAll(mapper.searchByName(name));
         return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
     }
+
+
+
 
     @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
     @Produces(value = "application/json")
@@ -60,6 +68,9 @@ public class MainController {
         records.addAll(mapper.searchSupplier(ico, name));
         return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
     }
+
+
+
 
     @RequestMapping(value = "/buyers/search", method = RequestMethod.GET, produces = "application/json")
     @Produces(value = "application/json")
@@ -80,6 +91,9 @@ public class MainController {
 
         return new ResponseEntity<List<Record>>(records.subList((page - 1)*20, (page - 1)*20+20), headers, HttpStatus.OK);
     }
+
+
+
 
     @RequestMapping(value = "/tenders/search", method = RequestMethod.GET, produces = "application/json")
     @Produces(value = "application/json")

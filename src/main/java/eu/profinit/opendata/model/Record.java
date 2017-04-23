@@ -1,10 +1,9 @@
 package eu.profinit.opendata.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
@@ -130,6 +129,8 @@ public class Record {
     @JsonIgnore
     private Collection<UnresolvedRelationship> unresolvedRelationships;
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The amount of money paid for particular tender", required = true)
     public Double getAmountCzk() {
         return amountCzk;
     }
@@ -138,6 +139,8 @@ public class Record {
         this.amountCzk = amountCzk;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The ID of tender", required = true)
     public String getAuthorityIdentifier() {
         return authorityIdentifier;
     }
@@ -146,7 +149,8 @@ public class Record {
         this.authorityIdentifier = authorityIdentifier;
     }
 
-
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The original currency amount", required = true)
     public String getCurrency() {
         return currency;
     }
@@ -155,7 +159,8 @@ public class Record {
         this.currency = currency;
     }
 
-
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The date of tender creation", required = true)
     public Date getDateCreated() {
         return dateCreated;
     }
@@ -164,6 +169,8 @@ public class Record {
         this.dateCreated = dateCreated;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The date of tender expiration", required = true)
     public Date getDateOfExpiry() {
         return dateOfExpiry;
     }
@@ -172,6 +179,8 @@ public class Record {
         this.dateOfExpiry = dateOfExpiry;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The date of payment for tender ", required = true)
     public Date getDateOfPayment() {
         return dateOfPayment;
     }
@@ -180,7 +189,8 @@ public class Record {
         this.dateOfPayment = dateOfPayment;
     }
 
-
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The date tender is done", required = true)
     public Date getDueDate() {
         return dueDate;
     }
@@ -197,6 +207,8 @@ public class Record {
         this.inEffect = inEffect;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Random UUID", required = true)
     public String getMasterId() {
         return masterId;
     }
@@ -205,6 +217,8 @@ public class Record {
         this.masterId = masterId;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The original currency amount", required = true)
     public Double getOriginalCurrencyAmount() {
         return originalCurrencyAmount;
     }
@@ -213,6 +227,8 @@ public class Record {
         this.originalCurrencyAmount = originalCurrencyAmount;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The name of the item of the payment", required = true)
     public String getBudgetCategory() {
         return budgetCategory;
     }
@@ -221,6 +237,8 @@ public class Record {
         this.budgetCategory = budgetCategory;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The name of the tender", required = true)
     public String getSubject() {
         return subject;
     }
@@ -229,6 +247,8 @@ public class Record {
         this.subject = subject;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Variable symbol of tender", required = true)
     public String getVariableSymbol() {
         return variableSymbol;
     }
@@ -237,6 +257,8 @@ public class Record {
         this.variableSymbol = variableSymbol;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The unique id of particular record in DB", required = true)
     public Long getRecordId() {
         return recordId;
     }
@@ -245,6 +267,8 @@ public class Record {
         this.recordId = recordId;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The possible types of record ", required = true)
     public RecordType getRecordType() {
         return recordType;
     }
@@ -253,6 +277,8 @@ public class Record {
         this.recordType = recordType;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The possible types of authority ", required = true)
     public AuthorityRole getAuthorityRole() {
         return authorityRole;
     }
@@ -261,7 +287,6 @@ public class Record {
         this.authorityRole = authorityRole;
     }
 
-    @JsonBackReference
     public Retrieval getRetrieval() {
         return retrieval;
     }
@@ -270,6 +295,8 @@ public class Record {
         this.retrieval = retrieval;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The authority of particular tender", required = true)
     public Entity getAuthority() {
         return authority;
     }
@@ -286,6 +313,8 @@ public class Record {
         this.partner = partner;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The  parent record", required = true)
     public Record getParentRecord() {
         return parentRecord;
     }
@@ -294,6 +323,8 @@ public class Record {
         this.parentRecord = parentRecord;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Periodicity by which payment is repeated, or it is time limit to payment", required = true)
     public Periodicity getPeriodicity() {
         return periodicity;
     }
@@ -302,6 +333,8 @@ public class Record {
         this.periodicity = periodicity;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "The  childRecord record od parent record", required = true)
     public Collection<Record> getChildRecords() {
         return childRecords;
     }
@@ -310,6 +343,8 @@ public class Record {
         this.childRecords = childRecords;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(notes = "Unresolved connection to some wrong inserted records to database", required = true)
     public Collection<UnresolvedRelationship> getUnresolvedRelationships() {
         return unresolvedRelationships;
     }
