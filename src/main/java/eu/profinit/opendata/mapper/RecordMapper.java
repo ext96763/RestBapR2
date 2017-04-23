@@ -21,5 +21,5 @@ public interface RecordMapper {
 
     List<Record> searchByName(@Param("name") String name);
 
-    List<Record> searchTender(@Param("name") String name, @Param("dateCreated")Date dateCreated, @Param("dueDate")Date dueDate, @Param("volume") Double volume);
+    List<Record> searchTender(@Param("name") String name, @Param("dateFrom")Date dateCreated, @Param("dateTo")Date dueDate, @Param("volume") Double volume);
 }

@@ -59,14 +59,16 @@
         </if>
 
         <choose>
-            <when test="dateCreated != null and dueDate !=null">
-                AND r.date_created BETWEEN #{dateCreated} AND #{dueDate}
+            <when test="dateFrom != null and dateTo != null">
+                AND r.date_created BETWEEN #{dateFrom} AND #{dateTo}
             </when>
-            <when test="dateCreated != null">
-                AND r.date_created >= #{dateCreated}
+            <when test="dateFrom != null">
+                <bind name="dateFrom" value="dateFrom" />
+                AND r.date_created >= #{dateFrom}
             </when>
-            <when test="dueDate != null">
-                <![CDATA[ AND r.date_created <= #{dueDate} ]]>
+            <when test="dateTo != null">
+                <bind name="dateTo" value="dateTo" />
+                <![CDATA[ AND r.date_created <= #{dateTo} ]]>
             </when>
         </choose>
         UNION
@@ -80,14 +82,16 @@
         </if>
 
         <choose>
-            <when test="dateCreated != null and dueDate !=null">
-                AND r.date_created BETWEEN #{dateCreated} AND #{dueDate}
+            <when test="dateFrom != null and dateTo != null">
+                AND r.date_created BETWEEN #{dateFrom} AND #{dateTo}
             </when>
-            <when test="dateCreated != null">
-                AND r.date_created >= #{dateCreated}
+            <when test="dateFrom != null">
+                <bind name="dateFrom" value="dateFrom" />
+                AND r.date_created >= #{dateFrom}
             </when>
-            <when test="dueDate != null">
-                <![CDATA[ AND r.date_created <= #{dueDate} ]]>
+            <when test="dateTo != null">
+                <bind name="dateTo" value="dateTo" />
+                <![CDATA[ AND r.date_created <= #{dateTo} ]]>
             </when>
         </choose>
     </select>

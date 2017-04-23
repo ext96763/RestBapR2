@@ -43,7 +43,8 @@ public class MainController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Failure")})
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "Name of tender", required = false, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "name", value = "Name of tender", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "Number of page", required = false, dataType = "string", paramType = "query")
     })
     @Produces(value = "application/json")
     @CrossOrigin()
@@ -57,10 +58,21 @@ public class MainController {
 
 
 
-
-    @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
+    @ApiOperation(value = "Search in Suppliers", notes = "Search in suppliers by name or ICO", produces = "application/json")
+    @ApiResponses(value ={
+            @ApiResponse(code = 200, message = "Success", response = Record.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "Name of supplier", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "ico", value = "ICO of supplier", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "Number of page", required = false, dataType = "string", paramType = "query")
+    })
     @Produces(value = "application/json")
     @CrossOrigin()
+    @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getSupplier(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name) {
 
@@ -71,10 +83,21 @@ public class MainController {
 
 
 
-
-    @RequestMapping(value = "/buyers/search", method = RequestMethod.GET, produces = "application/json")
+    @ApiOperation(value = "Search in Buyers", notes = "Search in buyers by name or ICO", produces = "application/json")
+    @ApiResponses(value ={
+            @ApiResponse(code = 200, message = "Success", response = Record.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "Name of supplier", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "ico", value = "ICO of buyer", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "Number of page", required = false, dataType = "string", paramType = "query")
+    })
     @Produces(value = "application/json")
     @CrossOrigin()
+    @RequestMapping(value = "/buyers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getCustomer(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name,
                                                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
@@ -94,20 +117,33 @@ public class MainController {
 
 
 
-
-    @RequestMapping(value = "/tenders/search", method = RequestMethod.GET, produces = "application/json")
+    @ApiOperation(value = "Search Tenders", notes = "Search tender by part of a given name, volume or date between created date and end date ", produces = "application/json")
+    @ApiResponses(value ={
+            @ApiResponse(code = 200, message = "Success", response = Record.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "Part of name of the tender", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "volume", value = "Precise volume of the particular tender", required = false, dataType = "Double", paramType = "query"),
+            @ApiImplicitParam(name = "dateCreated", value = "Date of tender creation", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "dueDate", value = "Date of tender end", required = false, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "Number of page", required = false, dataType = "string", paramType = "query")
+    })
     @Produces(value = "application/json")
     @CrossOrigin()
+    @RequestMapping(value = "/tenders/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getTender(@RequestParam(value = "name", required = false) String name,
-                                                  @RequestParam(value = "dateCreated", required = false)  String mappedDateCreated,
-                                                  @RequestParam(value = "dueDate", required = false)  String mappedDueDate,
+                                                  @RequestParam(value = "dateFrom", required = false)  String mappedDateFrom,
+                                                  @RequestParam(value = "dateTo", required = false)  String mappedDateTo,
                                                   @RequestParam(value = "volume", required = false) Double volume) throws ParseException {
 
-        Date dateCreated= dateParser.parseDate(mappedDateCreated);
-        Date dueDate= dateParser.parseDate(mappedDueDate);
+        Date dateFrom= dateParser.parseDate(mappedDateFrom);
+        Date dateTo= dateParser.parseDate(mappedDateTo);
 
         List<Record> records = new ArrayList<>();
-        records.addAll(mapper.searchTender(name, dateCreated , dueDate, volume));
+        records.addAll(mapper.searchTender(name, dateFrom , dateTo, volume));
         return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
     }
 
