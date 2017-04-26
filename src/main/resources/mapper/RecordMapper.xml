@@ -63,11 +63,9 @@
                 AND r.date_created BETWEEN #{dateFrom} AND #{dateTo}
             </when>
             <when test="dateFrom != null">
-                <bind name="dateFrom" value="dateFrom" />
                 AND r.date_created >= #{dateFrom}
             </when>
             <when test="dateTo != null">
-                <bind name="dateTo" value="dateTo" />
                 <![CDATA[ AND r.date_created <= #{dateTo} ]]>
             </when>
         </choose>
@@ -86,11 +84,9 @@
                 AND r.date_created BETWEEN #{dateFrom} AND #{dateTo}
             </when>
             <when test="dateFrom != null">
-                <bind name="dateFrom" value="dateFrom" />
                 AND r.date_created >= #{dateFrom}
             </when>
             <when test="dateTo != null">
-                <bind name="dateTo" value="dateTo" />
                 <![CDATA[ AND r.date_created <= #{dateTo} ]]>
             </when>
         </choose>
