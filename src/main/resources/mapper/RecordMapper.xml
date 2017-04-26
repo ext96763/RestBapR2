@@ -106,7 +106,6 @@
         </if>
     </select>
 
-
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
 
         <id property="recordId" column="record_id"/>
