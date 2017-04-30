@@ -1,15 +1,22 @@
 package eu.profinit.opendata.controller;
 
+import eu.profinit.opendata.ipfilter.IpLimitFilter;
+import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import eu.profinit.opendata.mapper.RecordMapper;
 import eu.profinit.opendata.model.Record;
 import eu.profinit.opendata.utils.DateParser;
+import eu.profinit.opendata.utils.LinkSolver;
+import eu.profinit.opendata.utils.PageCalc;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.ws.rs.Produces;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,12 +24,11 @@ import java.util.Date;
 import java.util.List;
 
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 
 /**
- * Created by livsu on 15.04.2017.
+ * MainController, in this class variables and parameters are mapping from the front end. Every method responds to particular search in data.
+ * Controller using annotation for API documentation. Also controller responds with different messages in cases when data aren't returned correctly.
+ *
  */
 
 
@@ -35,11 +41,19 @@ public class MainController {
     @Autowired
     DateParser dateParser;
 
+    @Autowired
+    PageCalc pageCalc;
+
+    @Autowired
+    LinkSolver linkSolver;
+
+    @Autowired
+    IpTimeWindowManager ipTimeWindowManager;
+
     @ApiOperation(value = "Search by name", notes = "Any part of given name of tender will by searched", produces = "application/json")
     @ApiResponses(value ={
             @ApiResponse(code = 200, message = "Success", response = Record.class),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Failure")})
     @ApiImplicitParams({
@@ -49,20 +63,47 @@ public class MainController {
     @Produces(value = "application/json")
     @CrossOrigin()
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody ResponseEntity<List<Record>> getByName(@RequestParam(value = "name", required = false) String name) {
+    public @ResponseBody ResponseEntity<List<Record>> getByName(@RequestParam(value = "name", required = false) String name,
+                                                                @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                                @RequestParam(value = "size", required = false, defaultValue = "30") Integer size) {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchByName(name));
-        return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
+        List<Record> cutRecords = new ArrayList<>();
+        cutRecords = PageCalc.pageCalc(records, page, size);
+        List errorParameterList = new ArrayList<>();
+
+            HttpHeaders headers = new HttpHeaders();
+            StringBuilder sb = new StringBuilder();
+
+            if (size > 100 || size <= 0) {
+            errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
+                return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+            }else if (page > records.size() / size || page <= 0) {
+                errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+                return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+            }else if (cutRecords.isEmpty()) {
+                return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
+            } else {
+                sb.append(linkSolver.firstLinkName(records, page, size, name) + ",");
+                sb.append(linkSolver.nextLinkName(records, page, size, name) + ",");
+                sb.append(linkSolver.prevLinkName(records, page, size, name) + ",");
+                sb.append(linkSolver.lastLinkName(records, page, size, name));
+                headers.add("Links", sb.toString());
+                headers.add("X-Total-Records", linkSolver.totalPages(page, records) + "");
+                headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
+                headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
+                return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+            }
     }
+
 
 
 
     @ApiOperation(value = "Search in Suppliers", notes = "Search in suppliers by name or ICO", produces = "application/json")
     @ApiResponses(value ={
             @ApiResponse(code = 200, message = "Success", response = Record.class),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Failure")})
     @ApiImplicitParams({
@@ -74,11 +115,38 @@ public class MainController {
     @CrossOrigin()
     @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getSupplier(@RequestParam(value = "ico", required = false) String ico,
-                                                                  @RequestParam(value = "name", required = false) String name) {
+                                                                  @RequestParam(value = "name", required = false) String name,
+                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageSupplier,
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer sizeSupplier) {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchSupplier(ico, name));
-        return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
+        List errorParameterList = new ArrayList();
+        List<Record> cutRecords = new ArrayList<>();
+        cutRecords = PageCalc.pageCalc(records, pageSupplier, sizeSupplier);
+
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder();
+
+        if (sizeSupplier > 100 || sizeSupplier <= 0) {
+            errorParameterList.add("Bad request parameter: " + sizeSupplier + ". Min value for size is [1] and max value for size is [100]");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (pageSupplier > records.size() / sizeSupplier || pageSupplier <= 0) {
+            errorParameterList.add("Bad request parameter: " + pageSupplier + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (cutRecords.isEmpty()) {
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
+        } else {
+            sb.append(linkSolver.firstLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
+            sb.append(linkSolver.nextLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
+            sb.append(linkSolver.prevLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
+            sb.append(linkSolver.lastLinkSupplier(records, pageSupplier, sizeSupplier, name, ico));
+            headers.add("Links", sb.toString());
+            headers.add("X-Total-Records", linkSolver.totalPages(pageSupplier, records) + "");
+            headers.add("X-Total-Page-Count", linkSolver.pageCount(records, sizeSupplier) + "");
+            headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        }
     }
 
 
@@ -86,8 +154,7 @@ public class MainController {
     @ApiOperation(value = "Search in Buyers", notes = "Search in buyers by name or ICO", produces = "application/json")
     @ApiResponses(value ={
             @ApiResponse(code = 200, message = "Success", response = Record.class),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Failure")})
     @ApiImplicitParams({
@@ -100,19 +167,38 @@ public class MainController {
     @RequestMapping(value = "/buyers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getCustomer(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name,
-                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size)
+    {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchCustomer(ico, name));
+        List errorParameterList = new ArrayList();
+        List<Record> cutRecords = new ArrayList<>();
+        cutRecords = PageCalc.pageCalc(records, page, size);
 
-        Link link = linkTo(methodOn(MainController.class).getCustomer(ico, name, page+1)).withRel("next");
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Link",link.toString());
-        headers.add("X-Total-Record-Count",records.size()+"");
-        headers.add("X-Total-Page-Count",records.size()/20+"");
+        StringBuilder sb = new StringBuilder();
 
-
-        return new ResponseEntity<List<Record>>(records.subList((page - 1)*20, (page - 1)*20+20), headers, HttpStatus.OK);
+        if (size > 100 || size <= 0) {
+            errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (page > records.size() / size || page <= 0) {
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (cutRecords.isEmpty()) {
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
+        } else {
+            sb.append(linkSolver.firstLinkBuyer(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.nextLinkBuyer(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.prevLinkBuyer(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.lastLinkBuyer(records, page, size, name, ico));
+            headers.add("Links", sb.toString());
+            headers.add("X-Total-Records", linkSolver.totalPages(page, records) + "");
+            headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
+            headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        }
     }
 
 
@@ -120,8 +206,7 @@ public class MainController {
     @ApiOperation(value = "Search Tenders", notes = "Search tender by part of a given name, volume or date between created date and end date ", produces = "application/json")
     @ApiResponses(value ={
             @ApiResponse(code = 200, message = "Success", response = Record.class),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 400, message = "Bad Request"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Failure")})
     @ApiImplicitParams({
@@ -137,6 +222,8 @@ public class MainController {
     public @ResponseBody ResponseEntity<List<Record>> getTender(@RequestParam(value = "name", required = false) String name,
                                                   @RequestParam(value = "dateFrom", required = false)  String mappedDateFrom,
                                                   @RequestParam(value = "dateTo", required = false)  String mappedDateTo,
+                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size,
                                                   @RequestParam(value = "volume", required = false) Double volume) throws ParseException {
 
         Date dateFrom= dateParser.parseDate(mappedDateFrom);
@@ -144,7 +231,32 @@ public class MainController {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchTender(name, dateFrom , dateTo, volume));
-        return new ResponseEntity<List<Record>>(records, HttpStatus.OK);
+        List errorParameterList = new ArrayList();
+        List<Record> cutRecords = new ArrayList<>();
+        cutRecords = PageCalc.pageCalc(records, page, size);
+
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder();
+
+        if (size > 100 || size <= 0) {
+            errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (page > records.size() / size || page <= 0) {
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+        }else if (cutRecords.isEmpty()) {
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
+        } else {
+            sb.append(linkSolver.firstLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.nextLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.prevLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.lastLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name));
+            headers.add("Links", sb.toString());
+            headers.add("X-Total-Records", linkSolver.totalPages(page, records) + "");
+            headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
+            headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
+            return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        }
     }
 
 }
