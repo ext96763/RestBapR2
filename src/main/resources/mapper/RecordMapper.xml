@@ -24,6 +24,9 @@
             AND LOWER(e.name) LIKE LOWER(#{pattern})
         </if>
         AND r.authority_role = 'customer'
+        <if test="name != null">
+            ORDER BY name DESC
+        </if>
     </select>
 
     <select id="searchCustomer" resultMap="recordResultMap">
@@ -46,6 +49,9 @@
             AND LOWER(e.name) LIKE LOWER(#{pattern})
         </if>
         AND r.authority_role = 'supplier'
+        <if test="name != null">
+            ORDER BY name DESC
+        </if>
     </select>
 
     <select id="searchTender" resultMap="recordResultMap">
@@ -90,6 +96,9 @@
                 <![CDATA[ AND r.date_created <= #{dateTo} ]]>
             </when>
         </choose>
+        <if test="name != null">
+            ORDER BY subject DESC
+        </if>
     </select>
 
     <select id="searchByName" resultMap="recordResultMap">
@@ -103,6 +112,9 @@
         <if test="name != null">
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+        <if test="name != null">
+            ORDER BY subject DESC
         </if>
     </select>
 

@@ -1,6 +1,6 @@
 package eu.profinit.opendata.controller;
 
-import eu.profinit.opendata.ipfilter.IpLimitFilter;
+
 import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import eu.profinit.opendata.mapper.RecordMapper;
 import eu.profinit.opendata.model.Record;
@@ -13,10 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.ws.rs.Produces;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,11 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 
-
 /**
  * MainController, in this class variables and parameters are mapping from the front end. Every method responds to particular search in data.
  * Controller using annotation for API documentation. Also controller responds with different messages in cases when data aren't returned correctly.
- *
  */
 
 
@@ -79,12 +73,12 @@ public class MainController {
             if (size > 100 || size <= 0) {
             errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
                 return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
-            }else if (page > records.size() / size || page <= 0) {
+            }else if (page <= 0) {
                 errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
                 return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
             }else if (cutRecords.isEmpty()) {
                 return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
-            } else {
+            }else if(cutRecords.size() <= size)  {
                 sb.append(linkSolver.firstLinkName(records, page, size, name) + ",");
                 sb.append(linkSolver.nextLinkName(records, page, size, name) + ",");
                 sb.append(linkSolver.prevLinkName(records, page, size, name) + ",");
@@ -94,7 +88,11 @@ public class MainController {
                 headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
                 headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
                 return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
-            }
+            } else if (page > cutRecords.size() / size){
+        errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+        return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
+    }
+        return new ResponseEntity<List<Record>>(cutRecords,headers, HttpStatus.OK);
     }
 
 
@@ -116,37 +114,41 @@ public class MainController {
     @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getSupplier(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name,
-                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageSupplier,
-                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer sizeSupplier) {
+                                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size) {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchSupplier(ico, name));
         List errorParameterList = new ArrayList();
         List<Record> cutRecords = new ArrayList<>();
-        cutRecords = PageCalc.pageCalc(records, pageSupplier, sizeSupplier);
+        cutRecords = PageCalc.pageCalc(records, page, size);
 
         HttpHeaders headers = new HttpHeaders();
         StringBuilder sb = new StringBuilder();
 
-        if (sizeSupplier > 100 || sizeSupplier <= 0) {
-            errorParameterList.add("Bad request parameter: " + sizeSupplier + ". Min value for size is [1] and max value for size is [100]");
+        if (size > 100 || size <= 0) {
+            errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
-        }else if (pageSupplier > records.size() / sizeSupplier || pageSupplier <= 0) {
-            errorParameterList.add("Bad request parameter: " + pageSupplier + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+        }else if (page <= 0) {
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }else if (cutRecords.isEmpty()) {
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
-        } else {
-            sb.append(linkSolver.firstLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
-            sb.append(linkSolver.nextLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
-            sb.append(linkSolver.prevLinkSupplier(records, pageSupplier, sizeSupplier, name, ico) + ",");
-            sb.append(linkSolver.lastLinkSupplier(records, pageSupplier, sizeSupplier, name, ico));
+        }else if(cutRecords.size() <= size) {
+            sb.append(linkSolver.firstLinkSupplier(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.nextLinkSupplier(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.prevLinkSupplier(records, page, size, name, ico) + ",");
+            sb.append(linkSolver.lastLinkSupplier(records, page, size, name, ico));
             headers.add("Links", sb.toString());
-            headers.add("X-Total-Records", linkSolver.totalPages(pageSupplier, records) + "");
-            headers.add("X-Total-Page-Count", linkSolver.pageCount(records, sizeSupplier) + "");
+            headers.add("X-Total-Records", linkSolver.totalPages(page, records) + "");
+            headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
             headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        } else if (page > cutRecords.size() / size){
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<List<Record>>(cutRecords,headers, HttpStatus.OK);
     }
 
 
@@ -183,12 +185,12 @@ public class MainController {
         if (size > 100 || size <= 0) {
             errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
-        }else if (page > records.size() / size || page <= 0) {
+        }else if(page <= 0) {
             errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }else if (cutRecords.isEmpty()) {
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
-        } else {
+        }else if(cutRecords.size() <= size){
             sb.append(linkSolver.firstLinkBuyer(records, page, size, name, ico) + ",");
             sb.append(linkSolver.nextLinkBuyer(records, page, size, name, ico) + ",");
             sb.append(linkSolver.prevLinkBuyer(records, page, size, name, ico) + ",");
@@ -198,7 +200,11 @@ public class MainController {
             headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
             headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        } else if (page > cutRecords.size() / size) {
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<List<Record>>(cutRecords,headers, HttpStatus.OK);
     }
 
 
@@ -241,12 +247,12 @@ public class MainController {
         if (size > 100 || size <= 0) {
             errorParameterList.add("Bad request parameter: " + size + ". Min value for size is [1] and max value for size is [100]");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
-        }else if (page > records.size() / size || page <= 0) {
+        }else if (page <= 0) {
             errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }else if (cutRecords.isEmpty()) {
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
-        } else {
+        } else if(cutRecords.size() <= size){
             sb.append(linkSolver.firstLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
             sb.append(linkSolver.nextLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
             sb.append(linkSolver.prevLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
@@ -256,7 +262,11 @@ public class MainController {
             headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");
             headers.add("X-Forwarded-For", ipTimeWindowManager.getIp());
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.OK);
+        } else if (page > cutRecords.size() / size){
+            errorParameterList.add("Bad request parameter: " + page + ". Only natural numbers are accepted. Max value of page can't exceed total number of pages");
+            return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<List<Record>>(cutRecords,headers, HttpStatus.OK);
     }
 
 }
