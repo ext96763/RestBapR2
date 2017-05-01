@@ -1,8 +1,5 @@
 package eu.profinit.opendata.model;
 
-import eu.profinit.opendata.model.typehandler.RecordTypeTypeHandler;
-
-import javax.persistence.*;
 
 /**
  * A placeholder entry for a parent-child relationship between two Records where one of the sides is not yet present in

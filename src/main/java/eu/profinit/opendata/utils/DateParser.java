@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by livsu on 22.04.2017.
+ * Class that converts input String to Date format by given pattern.
  */
 
 @Component

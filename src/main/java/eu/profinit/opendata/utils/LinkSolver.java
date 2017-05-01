@@ -3,14 +3,13 @@ package eu.profinit.opendata.utils;
 import eu.profinit.opendata.controller.MainController;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.util.List;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
- * Created by User on 27.04.2017.
+ * Class that resolves Links that are later added to headers in a string format.
  */
 
 @Component

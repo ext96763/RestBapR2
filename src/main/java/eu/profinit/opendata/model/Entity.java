@@ -1,13 +1,8 @@
 package eu.profinit.opendata.model;
 
-import javax.persistence.*;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.profinit.opendata.model.typehandler.EntityTypeTypeHandler;
 import io.swagger.annotations.ApiModelProperty;
 
 /**

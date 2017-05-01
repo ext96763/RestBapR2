@@ -1,14 +1,16 @@
 package eu.profinit.opendata.ipfilter;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.sun.xml.internal.bind.v2.TODO;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
 /**
- *
+ *Class that checks if particular ip has reached limit of requests.
  */
+
 public class IpTimeWindowManager {
 
 
@@ -39,6 +41,7 @@ public class IpTimeWindowManager {
     private void cleanExpiredRequests() {
         long expiredEpochMinute = lastEpochMinute - (WINDOW_SIZE_IN_MINUTES * 60);
 
+        //TODO rewrite for to work with list separately
         for (String ipAddress : requestsPerIp.keySet()) {
             List<Long> requests = requestsPerIp.get(ipAddress);
 

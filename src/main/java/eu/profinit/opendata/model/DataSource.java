@@ -1,9 +1,5 @@
 package eu.profinit.opendata.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import eu.profinit.opendata.model.typehandler.PeriodicityTypeHandler;
-import eu.profinit.opendata.model.typehandler.RecordTypeTypeHandler;
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;

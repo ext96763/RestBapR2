@@ -8,9 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by livsu on 15.04.2017.
+ * Interface to mybatis. Passing parameters to mybatis.
  */
-
 
 @Mapper
 public interface RecordMapper {

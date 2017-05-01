@@ -3,11 +3,14 @@ package eu.profinit.opendata.model.typehandler;
 import eu.profinit.opendata.model.EntityType;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+/**
+ * Type handler for Entity type enum.
+ */
 
 public class EntityTypeTypeHandler implements TypeHandler<EntityType> {
 

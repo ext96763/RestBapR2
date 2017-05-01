@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- *
+ *Filter class that is listening on LIMITED_PATHS URL. Throws exception if particular ip address have more requests
+ * than limit.
  */
 
 public class IpLimitFilter implements Filter {

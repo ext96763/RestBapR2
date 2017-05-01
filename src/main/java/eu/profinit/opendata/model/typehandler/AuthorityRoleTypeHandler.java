@@ -1,18 +1,17 @@
 package eu.profinit.opendata.model.typehandler;
 
 import eu.profinit.opendata.model.AuthorityRole;
-import eu.profinit.opendata.model.EntityType;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by livsu on 15.04.2017.
+ * Type handler for Authority role enum.
  */
+
 public class AuthorityRoleTypeHandler implements TypeHandler<AuthorityRole> {
 
     @Override

@@ -13,6 +13,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 
+/**
+ *Main application class.
+ */
+
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan

@@ -2,12 +2,12 @@ package eu.profinit.opendata.utils;
 
 
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by User on 26.04.2017.
+ * Class that resolve paging. If there enough records to separate them to different pages han PageCalc will cut a list
+ * of records. Otherwise records will be returned without cut.
  */
 
 @Component
