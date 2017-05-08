@@ -1,7 +1,7 @@
 package eu.profinit.opendata;
 
-import eu.profinit.opendata.ipfilter.IpLimitFilter;
-import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
+import eu.profinit.opendata.ipthrottlingfilter.IpLimitFilter;
+import eu.profinit.opendata.ipthrottlingfilter.IpTimeWindowManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

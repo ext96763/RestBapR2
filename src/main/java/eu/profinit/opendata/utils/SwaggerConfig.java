@@ -22,6 +22,7 @@ public class SwaggerConfig {
     public Docket openDataApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false)
                 .select()
                 .build();
     }

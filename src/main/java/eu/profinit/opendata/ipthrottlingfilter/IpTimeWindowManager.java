@@ -1,7 +1,6 @@
-package eu.profinit.opendata.ipfilter;
+package eu.profinit.opendata.ipthrottlingfilter;
 
 import com.google.common.collect.LinkedListMultimap;
-import com.sun.xml.internal.bind.v2.TODO;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,11 +14,12 @@ public class IpTimeWindowManager {
 
 
     public static final int WINDOW_SIZE_IN_MINUTES = 1;
-    public static final int MAX_REQUEST_PER_IP_IN_WINDOW = 50;
+    public static final int MAX_REQUEST_PER_IP_IN_WINDOW = 40;
+    public static final int MAX_REQUEST_PER_IP_Before_Throttling_IN_WINDOW = 6;
     private long lastEpochMinute;
-    String ip = new String();
+    private String ip;
 
-    private LinkedListMultimap<String, Long> requestsPerIp;
+    public LinkedListMultimap<String, Long> requestsPerIp;
 
     public IpTimeWindowManager() {
         requestsPerIp = LinkedListMultimap.create();
@@ -40,10 +40,11 @@ public class IpTimeWindowManager {
 
     private void cleanExpiredRequests() {
         long expiredEpochMinute = lastEpochMinute - (WINDOW_SIZE_IN_MINUTES * 60);
+        List<Long> requests;
 
         //TODO rewrite for to work with list separately
         for (String ipAddress : requestsPerIp.keySet()) {
-            List<Long> requests = requestsPerIp.get(ipAddress);
+            requests = requestsPerIp.get(ipAddress);
 
             for (Long request : requests) {
                 if (request < expiredEpochMinute) {
@@ -61,6 +62,11 @@ public class IpTimeWindowManager {
     public synchronized boolean ipAddressReachedLimit(String ipAddress) {
         int amountRequests = requestsPerIp.get(ipAddress).size();
         return (amountRequests > MAX_REQUEST_PER_IP_IN_WINDOW);
+    }
+
+    public synchronized boolean ipAddressReachedThrottlingLimit(String ipAddress){
+        int amountRequests = requestsPerIp.get(ipAddress).size();
+        return (amountRequests > MAX_REQUEST_PER_IP_Before_Throttling_IN_WINDOW);
     }
 
     public  String getIp () {
