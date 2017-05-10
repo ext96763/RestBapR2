@@ -1,7 +1,8 @@
 package eu.profinit.opendata;
 
-import eu.profinit.opendata.ipthrottlingfilter.IpLimitFilter;
-import eu.profinit.opendata.ipthrottlingfilter.IpTimeWindowManager;
+import eu.profinit.opendata.ipfilter.IpLimitFilter;
+import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
+import eu.profinit.opendata.throttlingfilter.ThrottlingFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +15,7 @@ import org.springframework.core.annotation.Order;
 
 
 /**
- *Main application class.
+ *Main application class. Beans configuration.
  */
 
 @SpringBootApplication
@@ -44,6 +45,21 @@ public class RestBapR2Application {
 	public FilterRegistrationBean ipLimitFilterRegistrationBean(IpLimitFilter ipLimitFilter) {
 		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 		registrationBean.setFilter(ipLimitFilter);
+		registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
+		return registrationBean;
+	}
+
+	@Bean
+	@Order(Ordered.LOWEST_PRECEDENCE)
+	public ThrottlingFilter throttlingFilter(IpTimeWindowManager ipTimeWindowManager) {
+		return new ThrottlingFilter(ipTimeWindowManager);
+	}
+
+	@Bean
+	@Order(Ordered.LOWEST_PRECEDENCE)
+	public FilterRegistrationBean throttlingFilterRegistrationBean(ThrottlingFilter throttlingFilter) {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		registrationBean.setFilter(throttlingFilter);
 		registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
 		return registrationBean;
 	}
