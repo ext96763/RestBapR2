@@ -1,20 +1,21 @@
-package eu.profinit.opendata.ipthrottlingfilter;
+package eu.profinit.opendata.ipfilter;
 
 import com.google.common.collect.LinkedListMultimap;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- *Class that checks if particular ip has reached limit of requests.
+ *Class that adds or removes IP address from map. Checks if time window has expired, if so removes IP from "BlackList"
  */
 
 public class IpTimeWindowManager {
 
 
     public static final int WINDOW_SIZE_IN_MINUTES = 1;
-    public static final int MAX_REQUEST_PER_IP_IN_WINDOW = 40;
+    public static final int MAX_REQUEST_PER_IP_IN_WINDOW = 120;
     public static final int MAX_REQUEST_PER_IP_Before_Throttling_IN_WINDOW = 6;
     private long lastEpochMinute;
     private String ip;
@@ -40,22 +41,29 @@ public class IpTimeWindowManager {
 
     private void cleanExpiredRequests() {
         long expiredEpochMinute = lastEpochMinute - (WINDOW_SIZE_IN_MINUTES * 60);
-        List<Long> requests;
+        List<String> ipList = new ArrayList<>();
 
-        //TODO rewrite for to work with list separately
         for (String ipAddress : requestsPerIp.keySet()) {
-            requests = requestsPerIp.get(ipAddress);
+
+            List<Long> requests = requestsPerIp.get(ipAddress);
+            List<Long> requestsHelpList = new ArrayList<>();
 
             for (Long request : requests) {
                 if (request < expiredEpochMinute) {
-                    requests.remove(request);
+                    requestsHelpList.add(request);
                 }
+            }
+            for (Long request : requestsHelpList) {
+                requests.remove(request);
             }
 
             if (requests.isEmpty()) {
-                requestsPerIp.removeAll(ipAddress);
+                ipList.add(ipAddress);
             }
 
+        }
+        for (String ip : ipList) {
+           requestsPerIp.removeAll(ip);
         }
     }
 

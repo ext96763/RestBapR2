@@ -1,7 +1,7 @@
 package eu.profinit.opendata.controller;
 
 
-import eu.profinit.opendata.ipthrottlingfilter.IpTimeWindowManager;
+import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import eu.profinit.opendata.mapper.RecordMapper;
 import eu.profinit.opendata.model.Record;
 import eu.profinit.opendata.utils.DateParser;
