@@ -4,6 +4,7 @@
 This project is dedicated to provide data from public contracts to everyone who want to process data
 and public data himself.
 
+
 ## Before you run this app, you need to make following steps:
 
 1. You need to have postgres installed

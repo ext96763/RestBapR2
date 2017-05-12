@@ -44,7 +44,6 @@ public class IpTimeWindowManager {
         List<String> ipList = new ArrayList<>();
 
         for (String ipAddress : requestsPerIp.keySet()) {
-
             List<Long> requests = requestsPerIp.get(ipAddress);
             List<Long> requestsHelpList = new ArrayList<>();
 
