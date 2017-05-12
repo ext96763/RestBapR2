@@ -13,10 +13,10 @@ import java.util.List;
 
 public class IpTimeWindowManager {
 
-
+    //FIXME: Move to properties file
     public static final int WINDOW_SIZE_IN_MINUTES = 1;
     public static final int MAX_REQUEST_PER_IP_IN_WINDOW = 120;
-    public static final int MAX_REQUEST_PER_IP_Before_Throttling_IN_WINDOW = 6;
+    public static final int MAX_REQUEST_PER_IP_Before_Throttling_IN_WINDOW = 60;
     private long lastEpochMinute;
     private String ip;
 
