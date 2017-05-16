@@ -230,13 +230,14 @@ public class MainController {
                                                   @RequestParam(value = "dateTo", required = false)  String mappedDateTo,
                                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "30") Integer size,
-                                                  @RequestParam(value = "volume", required = false) Double volume) throws ParseException {
+                                                  @RequestParam(value = "volumeFrom", required = false) Double volumeFrom,
+                                                  @RequestParam(value = "volumeTo", required = false) Double volumeTo) throws ParseException {
 
         Date dateFrom= dateParser.parseDate(mappedDateFrom);
         Date dateTo= dateParser.parseDate(mappedDateTo);
 
         List<Record> records = new ArrayList<>();
-        records.addAll(mapper.searchTender(name, dateFrom , dateTo, volume));
+        records.addAll(mapper.searchTender(name, dateFrom , dateTo, volumeFrom, volumeTo));
         List errorParameterList = new ArrayList();
         List<Record> cutRecords = new ArrayList<>();
         cutRecords = PageCalc.pageCalc(records, page, size);
@@ -253,10 +254,10 @@ public class MainController {
         }else if (cutRecords.isEmpty()) {
             return new ResponseEntity<List<Record>>(cutRecords, headers, HttpStatus.NOT_FOUND);
         } else if(cutRecords.size() <= size){
-            sb.append(linkSolver.firstLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
-            sb.append(linkSolver.nextLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
-            sb.append(linkSolver.prevLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name) + ",");
-            sb.append(linkSolver.lastLinkTender(records, page, size, volume, mappedDateFrom, mappedDateFrom, name));
+            sb.append(linkSolver.firstLinkTender(records, page, size, volumeFrom, volumeTo, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.nextLinkTender(records, page, size, volumeFrom, volumeTo, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.prevLinkTender(records, page, size, volumeFrom, volumeTo, mappedDateFrom, mappedDateFrom, name) + ",");
+            sb.append(linkSolver.lastLinkTender(records, page, size, volumeFrom, volumeTo, mappedDateFrom, mappedDateFrom, name));
             headers.add("Links", sb.toString());
             headers.add("X-Total-Records", linkSolver.totalPages(page, records) + "");
             headers.add("X-Total-Page-Count", linkSolver.pageCount(records, size) + "");

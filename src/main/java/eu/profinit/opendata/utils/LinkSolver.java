@@ -153,20 +153,20 @@ public class LinkSolver {
         return first.toString();
     }
 
-    public String nextLinkTender(List records, Integer page, Integer size, Double volume, String dateFrom, String dateTo, String name) throws ParseException{
+    public String nextLinkTender(List records, Integer page, Integer size, Double volumeFrom, Double volumeTo, String dateFrom, String dateTo, String name) throws ParseException{
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
         if (page < pageCount -1) {
-            Link next = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volume)).withRel("next");
+            Link next = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("next");
             nex = next.toString();
         }
         return nex;
     }
 
-    public String prevLinkTender(List records, Integer page, Integer size, Double volume, String dateFrom, String dateTo, String name)throws ParseException{
+    public String prevLinkTender(List records, Integer page, Integer size,  Double volumeFrom, Double volumeTo, String dateFrom, String dateTo, String name)throws ParseException{
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volume)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -180,21 +180,21 @@ public class LinkSolver {
         return records.size()/size;
     }
 
-    public String lastLinkTender(List records, Integer page, Integer size, Double volume, String dateFrom, String dateTo, String name)throws ParseException{
+    public String lastLinkTender(List records, Integer page, Integer size, Double volumeFrom, Double volumeTo, String dateFrom, String dateTo, String name)throws ParseException{
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
         page = pageCount - 1;
-        Link last = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volume)).withRel("last");
+        Link last = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("last");
 
         return last.toString();
     }
 
-    public String firstLinkTender(List records, Integer page, Integer size, Double volume, String dateFrom, String dateTo, String name)throws ParseException{
+    public String firstLinkTender(List records, Integer page, Integer size, Double volumeFrom, Double volumeTo, String dateFrom, String dateTo, String name)throws ParseException{
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = pageCount - pageCount + 1;
-        Link first = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volume)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getTender(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("first");
 
         return first.toString();
     }

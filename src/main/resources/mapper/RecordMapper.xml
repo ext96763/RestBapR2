@@ -60,9 +60,17 @@
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})
         </if>
-        <if test="volume != null">
-            AND r.amount_czk = #{volume}
-        </if>
+        <choose>
+            <when test="volumeFrom != null and volumeTo != null">
+                AND r.amount_czk BETWEEN #{volumeFrom} AND #{volumeTo}
+            </when>
+            <when test="volumeFrom != null">
+                <![CDATA[ AND r.amount_czk >= #{volumeFrom} ]]>
+            </when>
+            <when test="volumeTo != null">
+                <![CDATA[ AND r.amount_czk <= #{volumeTo} ]]>
+            </when>
+        </choose>
 
         <choose>
             <when test="dateFrom != null and dateTo != null">
@@ -81,9 +89,17 @@
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})
         </if>
-        <if test="volume != null">
-            AND r.amount_czk = #{volume}
-        </if>
+        <choose>
+            <when test="volumeFrom != null and volumeTo != null">
+                AND r.amount_czk BETWEEN #{volumeFrom} AND #{volumeTo}
+            </when>
+            <when test="volumeFrom != null">
+                <![CDATA[ AND r.amount_czk >= #{volumeFrom} ]]>
+            </when>
+            <when test="volumeTo != null">
+                <![CDATA[ AND r.amount_czk <= #{volumeTo} ]]>
+            </when>
+        </choose>
 
         <choose>
             <when test="dateFrom != null and dateTo != null">
