@@ -2,6 +2,7 @@ package eu.profinit.opendata.mapper;
 
 
 import eu.profinit.opendata.model.Record;
+import eu.profinit.opendata.model.Retrieval;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.Date;
@@ -21,4 +22,6 @@ public interface RecordMapper {
     List<Record> searchByName(@Param("name") String name);
 
     List<Record> searchTender(@Param("name") String name, @Param("dateFrom")Date dateCreated, @Param("dateTo")Date dueDate, @Param("volumeFrom") Double volumeFrom, @Param("volumeTo")Double volumeTo);
+
+    List<Retrieval> findLastDate();
 }

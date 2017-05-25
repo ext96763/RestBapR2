@@ -134,6 +134,10 @@
         </if>
     </select>
 
+    <select id="findLastDate" resultMap="retrievalResultMap">
+        SELECT MAX("date")AS DATE FROM "retrieval"
+    </select>
+
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
 
         <id property="recordId" column="record_id"/>
@@ -165,6 +169,15 @@
         <result property="dic" column="dic"/>
         <result property="isPublic" column="is_public"/>
         <result property="name" column="name"/>
+    </resultMap>
+
+    <resultMap id="retrievalResultMap" type="eu.profinit.opendata.model.Retrieval">
+        <id property="retrievalId" column="retrieval_id"/>
+        <result property="date" column="date"/>
+        <result property="failureReason" column="failure_reason"/>
+        <result property="numBadRecords" column="num_bad_records"/>
+        <result property="numRecordsInserted" column="num_records_inserted"/>
+        <result property="success" column="is_public"/>
     </resultMap>
 
 </mapper>

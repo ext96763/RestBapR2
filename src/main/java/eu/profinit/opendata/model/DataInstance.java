@@ -83,8 +83,6 @@ public class DataInstance {
     @JsonProperty
     private String mappingFile;
 
-     
-
     public String getFormat() {
         return format;
     }
@@ -92,8 +90,6 @@ public class DataInstance {
     public void setFormat(String format) {
         this.format = format;
     }
-
-     
 
     public String getMappingFile() {
         return mappingFile;

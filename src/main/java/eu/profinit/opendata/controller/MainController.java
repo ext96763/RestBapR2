@@ -4,6 +4,7 @@ package eu.profinit.opendata.controller;
 import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import eu.profinit.opendata.mapper.RecordMapper;
 import eu.profinit.opendata.model.Record;
+import eu.profinit.opendata.model.Retrieval;
 import eu.profinit.opendata.utils.DateParser;
 import eu.profinit.opendata.utils.LinkSolver;
 import eu.profinit.opendata.utils.PageCalc;
@@ -59,7 +60,7 @@ public class MainController {
     @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<List<Record>> getByName(@RequestParam(value = "name", required = false) String name,
                                                                 @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                                                @RequestParam(value = "size", required = false, defaultValue = "30") Integer size) {
+                                                                @RequestParam(value = "size", required = false, defaultValue = "5") Integer size) {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchByName(name));
@@ -115,7 +116,7 @@ public class MainController {
     public @ResponseBody ResponseEntity<List<Record>> getSupplier(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name,
                                                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size) {
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "5") Integer size) {
 
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchSupplier(ico, name));
@@ -170,7 +171,7 @@ public class MainController {
     public @ResponseBody ResponseEntity<List<Record>> getCustomer(@RequestParam(value = "ico", required = false) String ico,
                                                                   @RequestParam(value = "name", required = false) String name,
                                                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size)
+                                                                  @RequestParam(value = "size", required = false, defaultValue = "5") Integer size)
     {
 
         List<Record> records = new ArrayList<>();
@@ -229,7 +230,7 @@ public class MainController {
                                                   @RequestParam(value = "dateFrom", required = false)  String mappedDateFrom,
                                                   @RequestParam(value = "dateTo", required = false)  String mappedDateTo,
                                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                                  @RequestParam(value = "size", required = false, defaultValue = "30") Integer size,
+                                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
                                                   @RequestParam(value = "volumeFrom", required = false) Double volumeFrom,
                                                   @RequestParam(value = "volumeTo", required = false) Double volumeTo) throws ParseException {
 
@@ -268,6 +269,22 @@ public class MainController {
             return new ResponseEntity<List<Record>>(errorParameterList, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<List<Record>>(cutRecords,headers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Find last update date", notes = "Find last update of database", produces = "application/json")
+    @ApiResponses(value ={
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad Request"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @Produces(value = "application/json")
+    @CrossOrigin()
+    @RequestMapping(value = "/lastUpdate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody ResponseEntity<List<Retrieval>> getLastUpadte() {
+
+        List<Retrieval> retrievals = new ArrayList<>();
+        retrievals.addAll(mapper.findLastDate());
+        return new ResponseEntity<List<Retrieval>>(retrievals, HttpStatus.OK);
     }
 
 }
