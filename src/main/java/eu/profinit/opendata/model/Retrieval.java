@@ -47,7 +47,8 @@ public class Retrieval {
     private DataInstance dataInstance;
 
     /** The Records inserted as a result of this Retrieval. */
-       
+
+    @JsonProperty
     private Collection<Record> records;
 
     public Timestamp getDate() {

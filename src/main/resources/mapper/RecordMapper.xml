@@ -135,7 +135,7 @@
     </select>
 
     <select id="findLastDate" resultMap="retrievalResultMap">
-        SELECT MAX("date")AS DATE FROM "retrieval"
+    SELECT r."date", r.data_instance_id, r.retrieval_id, r.success, r.num_records_inserted, r.num_bad_records, r.failure_reason FROM retrieval r WHERE r.date = (SELECT max(ret.date) FROM retrieval ret WHERE ret.success = TRUE)
     </select>
 
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
