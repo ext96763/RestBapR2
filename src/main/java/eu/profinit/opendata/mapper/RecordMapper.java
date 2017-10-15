@@ -1,8 +1,10 @@
 package eu.profinit.opendata.mapper;
 
 
+import eu.profinit.opendata.model.PartialRecord;
 import eu.profinit.opendata.model.Record;
 import eu.profinit.opendata.model.Retrieval;
+import eu.profinit.opendata.model.TotalRecords;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.Date;
@@ -15,13 +17,25 @@ import java.util.List;
 @Mapper
 public interface RecordMapper {
 
-    List<Record> searchSupplier(@Param("ico") String ico, @Param("name") String name);
+    //TODO dokoncit dotazy v mapperu podle toho co je zde. Rozhoodnout jak to bude z detailem a jak s fullrecordem
 
-    List<Record> searchCustomer(@Param("ico") String ico, @Param("name") String name);
+    List<PartialRecord> searchTendersByNameOrDateOrVolumeShortDetail(@Param("name") String name, @Param("dateFrom")Date dateCreated, @Param("dateTo")Date dueDate, @Param("volumeFrom") Double volumeFrom, @Param("volumeTo")Double volumeTo);
 
-    List<Record> searchByName(@Param("name") String name);
+    List<Record> searchTenderByIdFulleRecord(@Param("id") Long id);
 
-    List<Record> searchTender(@Param("name") String name, @Param("dateFrom")Date dateCreated, @Param("dateTo")Date dueDate, @Param("volumeFrom") Double volumeFrom, @Param("volumeTo")Double volumeTo);
+    List<PartialRecord> searchSuppliersByNameOrIcoShortDetail(@Param("ico") String ico, @Param("name") String name);
+
+    List<Record> searchSupplierByIdFullDetail(@Param("id") Long id);
+
+    List<PartialRecord> searchCustomersByNameOrIcoShortDetail(@Param("ico") String ico, @Param("name") String name);
+
+    List<Record> searchCustomerByIdFullDetail(@Param("id") Long id);
+
+    List<PartialRecord> searchByNamePartialRecord(@Param("name") String name);
+
+    List<Record> searchByIdFullRecord(@Param("id") Long id);
+
+    List<TotalRecords> countAllRecords();
 
     List<Retrieval> findLastDate();
 }

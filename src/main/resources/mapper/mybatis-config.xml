@@ -5,12 +5,10 @@
 <configuration>
 
     <settings>
-        <setting name="logImpl" value="LOG4J"/>
+        <setting name="logImpl" value="LOG4J2"/>
     </settings>
     <mappers>
         <mapper resource="mapper/RecordMapper.xml"/>
     </mappers>
 
 </configuration>
-
-

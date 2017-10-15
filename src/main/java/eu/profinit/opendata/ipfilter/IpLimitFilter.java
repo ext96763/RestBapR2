@@ -1,8 +1,10 @@
 package eu.profinit.opendata.ipfilter;
 
 
+import eu.profinit.opendata.controller.MainController;
 import org.apache.catalina.connector.Request;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +19,7 @@ public class IpLimitFilter implements Filter {
 
     private static String[] LIMITED_PATHS = new String[]{"/"};
 
-    Logger logger = Logger.getLogger(IpLimitFilter.class);
+    private static Logger logger = LogManager.getLogger(IpLimitFilter.class);
 
     IpTimeWindowManager ipTimeWindowManager;
 

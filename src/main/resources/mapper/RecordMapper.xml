@@ -117,25 +117,34 @@
         </if>
     </select>
 
-    <select id="searchByName" resultMap="recordResultMap">
+    <select id="searchByIdFullRecord" resultMap="recordResultMap">
         SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
-        <if test="name != null">
-            <bind name="pattern" value="'%' + name + '%'" />
-            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        <if test="id != null">
+            AND r.record_id = #{id}
         </if>
         UNION
         SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
-        <if test="name != null">
-            <bind name="pattern" value="'%' + name + '%'" />
-            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        <if test="id != null">
+            AND r.record_id = #{id}
         </if>
-        <if test="name != null">
             ORDER BY subject DESC
-        </if>
     </select>
 
     <select id="findLastDate" resultMap="retrievalResultMap">
     SELECT r."date", r.data_instance_id, r.retrieval_id, r.success, r.num_records_inserted, r.num_bad_records, r.failure_reason FROM retrieval r WHERE r.date = (SELECT max(ret.date) FROM retrieval ret WHERE ret.success = TRUE)
+    </select>
+
+    <select id="searchByNamePartialRecord" resultMap="partialRecordResultMap">
+        SELECT r.record_id, r.subject FROM record r  WHERE 1=1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'" />
+            AND LOWER(r.subject) LIKE LOWER(#{pattern})
+        </if>
+        ORDER BY subject DESC
+    </select>
+
+    <select id="countAllRecords" resultMap="totalRecordsResultMap">
+        SELECT count(*) FROM record AS count
     </select>
 
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
@@ -178,6 +187,15 @@
         <result property="numBadRecords" column="num_bad_records"/>
         <result property="numRecordsInserted" column="num_records_inserted"/>
         <result property="success" column="is_public"/>
+    </resultMap>
+
+    <resultMap id="partialRecordResultMap" type="eu.profinit.opendata.model.PartialRecord">
+        <id property="recordId" column="record_id"/>
+        <result property="subject" column="subject"/>
+    </resultMap>
+
+    <resultMap id="totalRecordsResultMap" type="eu.profinit.opendata.model.TotalRecords">
+        <result property="count" column="count"/>
     </resultMap>
 
 </mapper>

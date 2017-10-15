@@ -2,10 +2,13 @@ package eu.profinit.opendata.throttlingfilter;
 
 
 
+import eu.profinit.opendata.controller.MainController;
 import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import org.apache.catalina.connector.Request;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -33,7 +36,7 @@ public class ThrottlingFilter implements Filter {
         Integer count;
     }
 
-    Logger logger = Logger.getLogger(ThrottlingFilter.class);
+    private static Logger logger = LogManager.getLogger(ThrottlingFilter.class);
 
     IpTimeWindowManager ipTimeWindowManager;
 

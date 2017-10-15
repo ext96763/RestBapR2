@@ -21,10 +21,10 @@ import org.springframework.core.annotation.Order;
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan
-public class RestBapR2Application {
+public class OpendataApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestBapR2Application.class, args);
+		SpringApplication.run(OpendataApiApplication.class, args);
 	}
 
 	@Bean
