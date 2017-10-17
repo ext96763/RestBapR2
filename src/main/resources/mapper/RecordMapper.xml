@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="eu.profinit.opendata.mapper.RecordMapper">
 
-    <select id="searchSupplier" resultMap="recordResultMap">
-        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+    <select id="searchSuppliersByNameOrIcoShortDetail" resultMap="partialRecordResultMap">
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
         <if test="ico != null">
             AND e.ico = #{ico}
         </if>
@@ -15,7 +15,7 @@
         </if>
         AND r.authority_role = 'supplier'
         UNION
-        SELECT * FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
         <if test="ico != null">
             AND e.ico = #{ico}
         </if>
@@ -24,13 +24,24 @@
             AND LOWER(e.name) LIKE LOWER(#{pattern})
         </if>
         AND r.authority_role = 'customer'
-        <if test="name != null">
-            ORDER BY name DESC
-        </if>
+        ORDER BY record_id ASC
     </select>
 
-    <select id="searchCustomer" resultMap="recordResultMap">
-        SELECT * FROM record r JOIN entity e ON e.entity_id = r.authority WHERE 1=1
+    <select id="searchSupplierByIdFullDetail" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
+        </if>
+        UNION
+        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
+        </if>
+        ORDER BY record_id ASC
+    </select>
+
+    <select id="searchBuyersByNameOrIcoShortDetail" resultMap="partialRecordResultMap">
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON e.entity_id = r.authority WHERE 1=1
         <if test="ico != null">
             AND e.ico = #{ico}
         </if>
@@ -40,7 +51,7 @@
         </if>
         AND r.authority_role = 'customer'
         UNION
-        SELECT * FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1
         <if test="ico != null">
             AND e.ico = #{ico}
         </if>
@@ -49,9 +60,20 @@
             AND LOWER(e.name) LIKE LOWER(#{pattern})
         </if>
         AND r.authority_role = 'supplier'
-        <if test="name != null">
-            ORDER BY name DESC
+        ORDER BY record_id ASC
+    </select>
+
+    <select id="searchBuyerByIdFullDetail" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
         </if>
+        UNION
+        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
+        </if>
+        ORDER BY record_id ASC
     </select>
 
     <select id="searchTender" resultMap="recordResultMap">
@@ -128,6 +150,19 @@
             AND r.record_id = #{id}
         </if>
             ORDER BY subject DESC
+    </select>
+
+    <select id="searchTenderByIdFullRecord" resultMap="recordResultMap">
+        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
+        </if>
+        UNION
+        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
+        <if test="id != null">
+            AND r.record_id = #{id}
+        </if>
+        ORDER BY record_id ASC
     </select>
 
     <select id="findLastDate" resultMap="retrievalResultMap">

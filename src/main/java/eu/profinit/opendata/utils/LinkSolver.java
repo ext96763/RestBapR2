@@ -19,7 +19,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
             if (page < pageCount -1) {
-                Link next = linkTo(methodOn(MainController.class).getCustomers(ico, name, page + 1, size)).withRel("next");
+                Link next = linkTo(methodOn(MainController.class).getBuyersShortDetail(ico, name, page + 1, size)).withRel("next");
                 nex = next.toString();
             }
             return nex;
@@ -28,7 +28,7 @@ public class LinkSolver {
     public String prevLinkBuyer(List records, Integer page, Integer size, String ico, String name){
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getCustomers(ico, name, page - 1, size)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getBuyersShortDetail(ico, name, page - 1, size)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -47,7 +47,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
             page = pageCount - 1;
-            Link last = linkTo(methodOn(MainController.class).getCustomers(ico, name, page , size)).withRel("last");
+            Link last = linkTo(methodOn(MainController.class).getBuyersShortDetail(ico, name, page , size)).withRel("last");
 
         return last.toString();
     }
@@ -56,7 +56,7 @@ public class LinkSolver {
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = pageCount - pageCount + 1;
-        Link first = linkTo(methodOn(MainController.class).getCustomers(ico, name, page , size)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getBuyersShortDetail(ico, name, page , size)).withRel("first");
 
         return first.toString();
     }
@@ -65,7 +65,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
         if (page < pageCount -1) {
-            Link next = linkTo(methodOn(MainController.class).getById(id, page + 1, size)).withRel("next");
+            Link next = linkTo(methodOn(MainController.class).getRecordById(id, page + 1, size)).withRel("next");
             nex = next.toString();
         }
         return nex;
@@ -74,7 +74,7 @@ public class LinkSolver {
     public String prevLinkName(List records, Integer page, Integer size, Long id){
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getById(id, page - 1, size)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getRecordById(id, page - 1, size)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -93,7 +93,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
         page = pageCount - 1;
-        Link last = linkTo(methodOn(MainController.class).getById(id, page , size)).withRel("last");
+        Link last = linkTo(methodOn(MainController.class).getRecordById(id, page , size)).withRel("last");
 
         return last.toString();
     }
@@ -102,7 +102,7 @@ public class LinkSolver {
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = pageCount - pageCount + 1;
-        Link first = linkTo(methodOn(MainController.class).getById(id, page , size)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getRecordById(id, page , size)).withRel("first");
 
         return first.toString();
     }
@@ -111,7 +111,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
         if (page < pageCount -1) {
-            Link next = linkTo(methodOn(MainController.class).getSuppliers(ico, name, page + 1, size)).withRel("next");
+            Link next = linkTo(methodOn(MainController.class).getSuppliersShortDetail(ico, name, page + 1, size)).withRel("next");
             nex = next.toString();
         }
         return nex;
@@ -120,7 +120,7 @@ public class LinkSolver {
     public String prevLinkSupplier(List records, Integer page, Integer size, String ico, String name){
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getSuppliers(ico, name, page - 1, size)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getSuppliersShortDetail(ico, name, page - 1, size)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -139,7 +139,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
         page = pageCount - 1;
-        Link last = linkTo(methodOn(MainController.class).getSuppliers(ico, name, page , size)).withRel("last");
+        Link last = linkTo(methodOn(MainController.class).getSuppliersShortDetail(ico, name, page , size)).withRel("last");
 
         return last.toString();
     }
@@ -148,7 +148,99 @@ public class LinkSolver {
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = 1;
-        Link first = linkTo(methodOn(MainController.class).getSuppliers(ico, name, page , size)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getSuppliersShortDetail(ico, name, page , size)).withRel("first");
+
+        return first.toString();
+    }
+
+    public String nextLinkBuyerById(List records, Integer page, Integer size, Long id){
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        String nex = new String();
+        if (page < pageCount -1) {
+            Link next = linkTo(methodOn(MainController.class).getBuyerById(id, page + 1, size)).withRel("next");
+            nex = next.toString();
+        }
+        return nex;
+    }
+
+    public String prevLinkSupplierById(List records, Integer page, Integer size, Long id){
+        String prev = new String();
+        if ((page -1) != 0) {
+            Link previous = linkTo(methodOn(MainController.class).getSupplierById(id, page - 1, size)).withRel("previous");
+            prev = previous.toString();
+        }
+        return prev;
+    }
+
+    public Integer totalPagesSupplierById (Integer page, List records) {
+        return records.size();
+    }
+
+    public  Integer pageCountSupplierById (List records, Integer size){
+        return records.size()/size;
+    }
+
+    public String lastLinkSupplierById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+
+        page = pageCount - 1;
+        Link last = linkTo(methodOn(MainController.class).getSupplierById(id, page, size)).withRel("last");
+
+        return last.toString();
+    }
+
+    public String firstLinkSupplierById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        page = 1;
+        Link first = linkTo(methodOn(MainController.class).getSupplierById(id, page, size)).withRel("first");
+
+        return first.toString();
+    }
+
+    public String nextLinkSupplierById(List records, Integer page, Integer size, Long id){
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        String nex = new String();
+        if (page < pageCount -1) {
+            Link next = linkTo(methodOn(MainController.class).getSupplierById(id, page + 1, size)).withRel("next");
+            nex = next.toString();
+        }
+        return nex;
+    }
+
+    public String prevLinkBuyerById(List records, Integer page, Integer size, Long id){
+        String prev = new String();
+        if ((page -1) != 0) {
+            Link previous = linkTo(methodOn(MainController.class).getBuyerById(id, page - 1, size)).withRel("previous");
+            prev = previous.toString();
+        }
+        return prev;
+    }
+
+    public Integer totalPagesBuyerById (Integer page, List records) {
+        return records.size();
+    }
+
+    public  Integer pageCountBuyerById (List records, Integer size){
+        return records.size()/size;
+    }
+
+    public String lastLinkBuyerById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+
+        page = pageCount - 1;
+        Link last = linkTo(methodOn(MainController.class).getBuyerById(id, page, size)).withRel("last");
+
+        return last.toString();
+    }
+
+    public String firstLinkBuyerById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        page = 1;
+        Link first = linkTo(methodOn(MainController.class).getBuyerById(id, page, size)).withRel("first");
 
         return first.toString();
     }
@@ -157,7 +249,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
         if (page < pageCount -1) {
-            Link next = linkTo(methodOn(MainController.class).getTenders(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("next");
+            Link next = linkTo(methodOn(MainController.class).getTendersShortDetail(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("next");
             nex = next.toString();
         }
         return nex;
@@ -166,7 +258,7 @@ public class LinkSolver {
     public String prevLinkTender(List records, Integer page, Integer size,  Double volumeFrom, Double volumeTo, String dateFrom, String dateTo, String name)throws ParseException{
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getTenders(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getTendersShortDetail(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -185,7 +277,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
         page = pageCount - 1;
-        Link last = linkTo(methodOn(MainController.class).getTenders(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("last");
+        Link last = linkTo(methodOn(MainController.class).getTendersShortDetail(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("last");
 
         return last.toString();
     }
@@ -194,16 +286,62 @@ public class LinkSolver {
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = pageCount - pageCount + 1;
-        Link first = linkTo(methodOn(MainController.class).getTenders(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getTendersShortDetail(name, dateFrom, dateTo, page, size, volumeFrom, volumeTo)).withRel("first");
 
         return first.toString();
+    }
+
+    public String prevLinkTenderById(List records, Integer page, Integer size, Long id){
+        String prev = new String();
+        if ((page -1) != 0) {
+            Link previous = linkTo(methodOn(MainController.class).getTenderById(id, page - 1, size)).withRel("previous");
+            prev = previous.toString();
+        }
+        return prev;
+    }
+
+    public Integer totalPagesTenderById (Integer page, List records) {
+        return records.size();
+    }
+
+    public  Integer pageCountTenderById (List records, Integer size){
+        return records.size()/size;
+    }
+
+    public String lastLinkTenderById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+
+        page = pageCount - 1;
+        Link last = linkTo(methodOn(MainController.class).getTenderById(id, page, size)).withRel("last");
+
+        return last.toString();
+    }
+
+    public String firstLinkTenderById(List records, Integer page, Integer size, Long id){
+
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        page = 1;
+        Link first = linkTo(methodOn(MainController.class).getTenderById(id, page, size)).withRel("first");
+
+        return first.toString();
+    }
+
+    public String nextLinkTenderById(List records, Integer page, Integer size, Long id){
+        int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
+        String nex = new String();
+        if (page < pageCount -1) {
+            Link next = linkTo(methodOn(MainController.class).getTenderById(id, page + 1, size)).withRel("next");
+            nex = next.toString();
+        }
+        return nex;
     }
 
     public String nextLinkOfRecordById(List records, Integer page, Integer size, String name) throws ParseException{
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         String nex = new String();
         if (page < pageCount -1) {
-            Link next = linkTo(methodOn(MainController.class).getOneRecordById(name, page, size)).withRel("next");
+            Link next = linkTo(methodOn(MainController.class).getRecordsByNameShortDetail(name, page, size)).withRel("next");
             nex = next.toString();
         }
         return nex;
@@ -212,7 +350,7 @@ public class LinkSolver {
     public String prevLinkOfRecordById(List records, Integer page, Integer size, String name) throws ParseException {
         String prev = new String();
         if ((page -1) != 0) {
-            Link previous = linkTo(methodOn(MainController.class).getOneRecordById(name, page - 1, size)).withRel("previous");
+            Link previous = linkTo(methodOn(MainController.class).getRecordsByNameShortDetail(name, page - 1, size)).withRel("previous");
             prev = previous.toString();
         }
         return prev;
@@ -231,7 +369,7 @@ public class LinkSolver {
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
 
         page = pageCount - 1;
-        Link last = linkTo(methodOn(MainController.class).getOneRecordById(name, page, size)).withRel("last");
+        Link last = linkTo(methodOn(MainController.class).getRecordsByNameShortDetail(name, page, size)).withRel("last");
 
         return last.toString();
     }
@@ -240,7 +378,7 @@ public class LinkSolver {
 
         int pageCount = (records.size() / size) + (records.size() % size > 0 ? 1 : 0);
         page = pageCount - pageCount + 1;
-        Link first = linkTo(methodOn(MainController.class).getOneRecordById(name, page, size)).withRel("first");
+        Link first = linkTo(methodOn(MainController.class).getRecordsByNameShortDetail(name, page, size)).withRel("first");
 
         return first.toString();
     }
