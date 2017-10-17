@@ -76,8 +76,8 @@
         ORDER BY record_id ASC
     </select>
 
-    <select id="searchTender" resultMap="recordResultMap">
-        SELECT * FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
+    <select id="searchTendersByNameOrDateOrVolumeShortDetail" resultMap="partialRecordResultMap">
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1
         <if test="name != null">
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})
@@ -106,7 +106,7 @@
             </when>
         </choose>
         UNION
-        SELECT * FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
+        SELECT r.record_id, r.subject FROM record r JOIN entity e ON  r.partner = e.entity_id WHERE 1=1
         <if test="name != null">
             <bind name="pattern" value="'%' + name + '%'" />
             AND LOWER(r.subject) LIKE LOWER(#{pattern})

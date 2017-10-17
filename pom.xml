@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.profinit.opendata</groupId>
-	<artifactId>RestBapR2</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>OpenDataApiApplication</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>eu.profinit.opendata</name>
