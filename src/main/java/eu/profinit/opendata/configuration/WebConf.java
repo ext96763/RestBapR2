@@ -11,6 +11,7 @@ public class WebConf extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/api").setViewName("forward:/index.html");
+        registry.addViewController("/error").setViewName("forward:/error.html");
     }
 }

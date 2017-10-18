@@ -14,6 +14,7 @@ import io.swagger.annotations.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,10 @@ import java.util.List;
  * Controller using annotation for API documentation. Also controller responds with different messages in cases when data aren't returned correctly.
  */
 
+//TODO finish logging at other classes, fix time value on logfile/xml. Finish api endpoints. Change port, path to logging
 
 @RestController
-public class MainController {
+public class MainController implements ErrorController{
 
     @Autowired
     RecordMapper mapper;
@@ -53,6 +55,11 @@ public class MainController {
 
     //Limit of records for one apiCall
     private Long sizeLimit = 100L;
+
+    @Override
+    public String getErrorPath() {
+        return null;
+    }
 
     @ApiOperation(value = "Search part of name of any record", notes = "Any part of given name of tender will by searched ", produces = "application/json")
     @ApiResponses(value = {
@@ -567,6 +574,5 @@ public class MainController {
         totalRecords.addAll(mapper.countAllRecords());
         return new ResponseEntity<List<TotalRecords>>(totalRecords, HttpStatus.OK);
     }
-    //TODO finish logging at other classes, fix time value on logfile/xml. Finish api endpoints. Change port, path to logging
 
 }
