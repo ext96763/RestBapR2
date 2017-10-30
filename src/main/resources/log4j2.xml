@@ -12,13 +12,13 @@
         </Console>
 
         <!-- Rolling File Appender -->
-        <RollingFile name="FileAppender" fileName="logs/openData.log"
-                     filePattern="logs/openData%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="FileAppender" fileName="/home/Logs/OpenDataApplicationApiLog/openData.log"
+                     filePattern="OpenDataApplicationApiLog/openData%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
-                <SizeBasedTriggeringPolicy size="100MB" />
+                <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>

@@ -6,7 +6,11 @@ import eu.profinit.opendata.throttlingfilter.ThrottlingFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Scope;
@@ -15,19 +19,34 @@ import org.springframework.core.annotation.Order;
 
 
 /**
- *Main application class. Beans configuration.
+ *Main application class. Beans conf.
  */
 
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan
-public class OpenDataApiApplication {
+public class OpenDataApiApplication extends SpringBootServletInitializer{
 
-	public static void main(String[] args) {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
+    }
+
+    private static Class<OpenDataApiApplication> applicationClass = OpenDataApiApplication.class;
+
+
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(OpenDataApiApplication.class, args);
 	}
 
-	@Bean
+    @Bean
+    public EmbeddedServletContainerFactory servletContainer() {
+        TomcatEmbeddedServletContainerFactory factory =
+                new TomcatEmbeddedServletContainerFactory();
+        return factory;
+    }
+
+    @Bean
 	@Scope(value="singleton")
 	@Order(Ordered.LOWEST_PRECEDENCE)
 	public IpTimeWindowManager ipTimeWindowManager() {

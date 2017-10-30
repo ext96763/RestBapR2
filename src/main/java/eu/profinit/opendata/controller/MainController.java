@@ -75,7 +75,7 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/search", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<PartialRecord>> getRecordsByNameShortDetail(@RequestParam(value = "name", required = true) String name,
                                                                     @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
@@ -87,7 +87,7 @@ public class MainController implements ErrorController{
         List<PartialRecord> cutRecord = new ArrayList<>();
         cutRecord = PageCalc.pageCalc(partialRecord, page, size);
 
-        logger.info("REQ started on path - api/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
+        logger.info("REQ started on path - /search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
         HttpHeaders headers = new HttpHeaders();
         StringBuilder sb = new StringBuilder();
 
@@ -137,13 +137,13 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/search/record", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/search/record", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<Record>> getRecordById(@RequestParam(value = "id", required = false) Long id,
                                                @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                @RequestParam(value = "size", required = false, defaultValue = "5") Integer size) {
 
-        logger.info("REQ started on path - api/search/record, parameters:  size[" + size + "], " + "page[" + page + "], " + "iD[" + id + "]");
+        logger.info("REQ started on path - /search/record, parameters:  size[" + size + "], " + "page[" + page + "], " + "iD[" + id + "]");
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchByIdFullRecord(id));
         logger.info("DB select call: searchByIdFullRecord  iD[" + id + "]");
@@ -196,14 +196,14 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/suppliers/search", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/suppliers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<PartialRecord>> getSuppliersShortDetail(@RequestParam(value = "ico", required = false) String ico,
                                                                 @RequestParam(value = "name", required = false) String name,
                                                                 @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                                 @RequestParam(value = "size", required = false, defaultValue = "5") Integer size) {
 
-        logger.info("REQ started on path - api/suppliers/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
+        logger.info("REQ started on path - /suppliers/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
         List<PartialRecord> records = new ArrayList<>();
         records.addAll(mapper.searchSuppliersByNameOrIcoShortDetail(ico, name));
         List errorParameterList = new ArrayList();
@@ -255,13 +255,13 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/supplier/record", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/supplier/record", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<Record>> getSupplierById(@RequestParam(value = "id", required = true) Long id,
                                                         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                         @RequestParam(value = "size", required = false, defaultValue = "1") Integer size) {
 
-        logger.info("REQ started on path - api/suppliers/record, parameters:  id[" + id + "]");
+        logger.info("REQ started on path - /suppliers/record, parameters:  id[" + id + "]");
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchSupplierByIdFullDetail(id));
         List errorParameterList = new ArrayList();
@@ -312,14 +312,14 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/buyers/search", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/buyers/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<PartialRecord>> getBuyersShortDetail(@RequestParam(value = "ico", required = false) String ico,
                                                              @RequestParam(value = "name", required = false) String name,
                                                              @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                              @RequestParam(value = "size", required = false, defaultValue = "5") Integer size) {
 
-        logger.info("REQ started on path - api/buyers/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
+        logger.info("REQ started on path - /buyers/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "]");
         List<PartialRecord> records = new ArrayList<>();
         records.addAll(mapper.searchBuyersByNameOrIcoShortDetail(ico, name));
         List errorParameterList = new ArrayList();
@@ -372,13 +372,13 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/buyer/record", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/buyer/record", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<Record>> getBuyerById(@RequestParam(value = "id", required = true) Long id,
                                                  @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                  @RequestParam(value = "size", required = false, defaultValue = "1") Integer size) {
 
-        logger.info("REQ started on path - api/buyer/record, parameters:  id[" + id + "]");
+        logger.info("REQ started on path - /buyer/record, parameters:  id[" + id + "]");
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchBuyerByIdFullDetail(id));
         List errorParameterList = new ArrayList();
@@ -431,7 +431,7 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/tenders/search", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/tenders/search", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<PartialRecord>> getTendersShortDetail(@RequestParam(value = "name", required = false) String name,
                                                               @RequestParam(value = "dateFrom", required = false) String mappedDateFrom,
@@ -441,7 +441,7 @@ public class MainController implements ErrorController{
                                                               @RequestParam(value = "volumeFrom", required = false) Double volumeFrom,
                                                               @RequestParam(value = "volumeTo", required = false) Double volumeTo) throws ParseException {
 
-        logger.info("REQ started on path - api/tenders/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "], " + "dateFrom[" + mappedDateFrom + "], " + "dateTo[" + mappedDateTo + "], " + "volumeFrom[" + volumeFrom + "], " + "volumeTo[" + volumeTo + "]");
+        logger.info("REQ started on path - /tenders/search, parameters:  size[" + size + "], " + "page[" + page + "], " + "keyWord[" + name + "], " + "dateFrom[" + mappedDateFrom + "], " + "dateTo[" + mappedDateTo + "], " + "volumeFrom[" + volumeFrom + "], " + "volumeTo[" + volumeTo + "]");
         Date dateFrom = dateParser.parseDate(mappedDateFrom);
         Date dateTo = dateParser.parseDate(mappedDateTo);
 
@@ -497,13 +497,13 @@ public class MainController implements ErrorController{
     })
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/tender/record", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/tender/record", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<Record>> getTenderById(@RequestParam(value = "id", required = true) Long id,
                                               @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                               @RequestParam(value = "size", required = false, defaultValue = "1") Integer size) {
 
-        logger.info("REQ started on path - api/tender/record, parameters:  id[" + id + "]");
+        logger.info("REQ started on path - /tender/record, parameters:  id[" + id + "]");
         List<Record> records = new ArrayList<>();
         records.addAll(mapper.searchTenderByIdFullRecord(id));
         List errorParameterList = new ArrayList();
@@ -547,11 +547,11 @@ public class MainController implements ErrorController{
             @ApiResponse(code = 500, message = "Failure")})
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/lastUpdate", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/lastUpdate", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<Retrieval>> getLastUpadte() {
 
-        logger.info("REQ started on path - api/lastUpdate");
+        logger.info("REQ started on path - /lastUpdate");
 
         List<Retrieval> retrievals = new ArrayList<>();
         retrievals.addAll(mapper.findLastDate());
@@ -565,11 +565,11 @@ public class MainController implements ErrorController{
             @ApiResponse(code = 500, message = "Failure")})
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "api/totalRecords", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/totalRecords", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<TotalRecords>> getTotalRecordsCount() {
 
-        logger.info("REQ started on path - api/totalRecords");
+        logger.info("REQ started on path - /totalRecords");
         List<TotalRecords> totalRecords = new ArrayList<>();
         totalRecords.addAll(mapper.countAllRecords());
         return new ResponseEntity<List<TotalRecords>>(totalRecords, HttpStatus.OK);

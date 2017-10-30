@@ -1,4 +1,4 @@
-package eu.profinit.opendata.configuration;
+package eu.profinit.opendata.conf;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
