@@ -1,10 +1,7 @@
 package eu.profinit.opendata.mapper;
 
 
-import eu.profinit.opendata.model.PartialRecord;
-import eu.profinit.opendata.model.Record;
-import eu.profinit.opendata.model.Retrieval;
-import eu.profinit.opendata.model.TotalRecords;
+import eu.profinit.opendata.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.Date;
@@ -34,6 +31,10 @@ public interface RecordMapper {
     List<Record> searchByIdFullRecord(@Param("id") Long id);
 
     List<TotalRecords> countAllRecords();
+
+    List<TotalBuyers> countAllBuyers();
+
+    List<TotalSuppliers> countAllSuppliers();
 
     List<Retrieval> findLastDate();
 }

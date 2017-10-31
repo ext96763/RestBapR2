@@ -179,7 +179,19 @@
     </select>
 
     <select id="countAllRecords" resultMap="totalRecordsResultMap">
-        SELECT count(*) FROM record AS count
+        SELECT count(*) FROM record AS totalSuppliers
+    </select>
+    
+    <select id="countAllBuyers" resultMap="totalBuyersResultMap">
+        SELECT count(*) AS totalBuyers  FROM ( SELECT distinct(e.entity_id) FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1 AND r.authority_role = 'customer'
+        UNION
+        SELECT distinct(e.entity_id) FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1 AND r.authority_role = 'supplier') as totalBuyers
+    </select>
+
+    <select id="countAllSuppliers" resultMap="totalSuppliersResultMap">
+        SELECT count(*) AS totalSuppliers  FROM ( SELECT distinct(e.entity_id) FROM record r JOIN entity e ON  r.authority = e.entity_id WHERE 1=1 AND r.authority_role = 'supplier'
+        UNION
+        SELECT distinct(e.entity_id) FROM record r JOIN entity e ON e.entity_id = r.partner WHERE 1=1 AND r.authority_role = 'customer') as totalSuppliers;
     </select>
 
     <resultMap id="recordResultMap" type="eu.profinit.opendata.model.Record">
@@ -230,7 +242,15 @@
     </resultMap>
 
     <resultMap id="totalRecordsResultMap" type="eu.profinit.opendata.model.TotalRecords">
-        <result property="count" column="count"/>
+        <result property="totalRecords" column="totalRecords"/>
+    </resultMap>
+
+    <resultMap id="totalBuyersResultMap" type="eu.profinit.opendata.model.TotalBuyers">
+        <result property="totalBuyers" column="totalBuyers"/>
+    </resultMap>
+
+    <resultMap id="totalSuppliersResultMap" type="eu.profinit.opendata.model.TotalSuppliers">
+        <result property="totalSuppliers" column="totalSuppliers"/>
     </resultMap>
 
 </mapper>

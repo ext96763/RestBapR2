@@ -3,10 +3,7 @@ package eu.profinit.opendata.controller;
 
 import eu.profinit.opendata.ipfilter.IpTimeWindowManager;
 import eu.profinit.opendata.mapper.RecordMapper;
-import eu.profinit.opendata.model.PartialRecord;
-import eu.profinit.opendata.model.Record;
-import eu.profinit.opendata.model.Retrieval;
-import eu.profinit.opendata.model.TotalRecords;
+import eu.profinit.opendata.model.*;
 import eu.profinit.opendata.utils.DateParser;
 import eu.profinit.opendata.utils.LinkSolver;
 import eu.profinit.opendata.utils.PageCalc;
@@ -565,7 +562,7 @@ public class MainController implements ErrorController{
             @ApiResponse(code = 500, message = "Failure")})
     @Produces(value = "application/json")
     @CrossOrigin()
-    @RequestMapping(value = "/totalRecords", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/count/totalRecords", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     ResponseEntity<List<TotalRecords>> getTotalRecordsCount() {
 
@@ -575,4 +572,35 @@ public class MainController implements ErrorController{
         return new ResponseEntity<List<TotalRecords>>(totalRecords, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Find total count of Buyers", notes = "All records count of buyers in DB", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @Produces(value = "application/json")
+    @CrossOrigin()
+    @RequestMapping(value = "/count/totalBuyers", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    ResponseEntity<List<TotalBuyers>> getTotalBuyersCount() {
+
+        logger.info("REQ started on path - /totalBuyers");
+        List<TotalBuyers> totalBuyers = new ArrayList<>();
+        totalBuyers.addAll(mapper.countAllBuyers());
+        return new ResponseEntity<List<TotalBuyers>>(totalBuyers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Find total count of Suppliers", notes = "All records count of suppliers in DB", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Failure")})
+    @Produces(value = "application/json")
+    @CrossOrigin()
+    @RequestMapping(value = "/count/totalSuppliers", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    ResponseEntity<List<TotalSuppliers>> getTotalSuppliersCount() {
+
+        logger.info("REQ started on path - /totalSuppliers");
+        List<TotalSuppliers> totalSuppliers = new ArrayList<>();
+        totalSuppliers.addAll(mapper.countAllSuppliers());
+        return new ResponseEntity<List<TotalSuppliers>>(totalSuppliers, HttpStatus.OK);
+    }
 }
